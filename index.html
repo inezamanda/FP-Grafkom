@@ -1,25 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <link rel="stylesheet" href="style.css" />
-    </head>
-    <body>
-        <div id="lives"></div>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="lives"></div>
 
-        <button id="help-button" onclick="var dialog = document.getElementById('help-dialog'); dialog.style.display = 'block';">HELP</button>
+    <button
+      id="help-button"
+      onclick="var dialog = document.getElementById('help-dialog'); dialog.style.display = 'block';"
+    >
+      HELP
+    </button>
 
-        <div id="help-dialog" class="dialog">
-            <h2>CONTROLS</h2>
+    <div id="help-dialog" class="dialog">
+      <h2>CONTROLS</h2>
 
-            <p>WASD: Use W/S to move forward/backward and A/D to turn left/right.</p>
+      <p>WASD: Use W/S to move forward/backward and A/D to turn left/right.</p>
 
-            <p>After you collect all of the dots, the game will start over but pacman and the ghosts will get a little bit faster!<p>
+      <p>
+        After you collect all of the dots, the game will start over but pacman
+        and the ghosts will get a little bit faster!
+      </p>
+      <p>
+        <button
+          onclick="var dialog = document.getElementById('help-dialog'); dialog.style.display = 'none';"
+        >
+          Close
+        </button>
+      </p>
+    </div>
 
-            <button onclick="var dialog = document.getElementById('help-dialog'); dialog.style.display = 'none';">Close</button>
-        </div>
-
-        <script src="three.js"></script> 
-        <script src="helvetiker_regular.typeface.js"></script>
-        <script src="game.js"></script>
-    </body>
+    <script src="three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="helvetiker_regular.typeface.js"></script>
+    <script src="game.js" type="module"></script>
+  </body>
 </html>
