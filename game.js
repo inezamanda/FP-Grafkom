@@ -18,7 +18,7 @@
         '# . . . . . . . . . . . . . . . . . . . . . . . . . . #',
         '# . # # # # . # # . # # # # # # # # . # # . # # # # . #',
         '# . # # # # . # # . # # # # # # # # . # # . # # # # . #',
-        '# . . . . . . # # . . . . # # . . . . # # . . . . . . #',
+        '# . . . . . . # # . . . . # # . . . . # # . . . . . H #',
         '# # # # # # . # # # # #   # #   # # # # # . # # # # # #',
         '          # . # # # # #   # #   # # # # # . #          ',
         '          # . # #         G           # # . #          ',
@@ -30,7 +30,7 @@
         '          # . # #                     # # . #          ',
         '          # . # #   # # # # # # # #   # # . #          ',
         '# # # # # # . # #   # # # # # # # #   # # . # # # # # #',
-        '# . . . . . . . . . . . . # # . . . . . . . . . . . . #',
+        '# H . . . . . . . . . . . # # . . . . . . . . . . . . #',
         '# . # # # # . # # # # # . # # . # # # # # . # # # # . #',
         '# . # # # # . # # # # # . # # . # # # # # . # # # # . #',
         '# o . . # # . . . . . . . P   . . . . . . . # # . . o #',
@@ -89,7 +89,10 @@
                     map.pacmanSpawn = new THREE.Vector3(x, y, 0);
                 } else if (cell === 'G') {
                     map.ghostSpawn = new THREE.Vector3(x, y, 0);
-                }
+                } else if (cell === 'H') {
+                    object = createHea();
+                    map.numDots += 1;
+                } 
 
                 if (object !== null) {
                     object.position.set(x, y, 0);
@@ -172,6 +175,18 @@
             dot.isDot = true;
 
             return dot;
+        };
+    }();
+
+    var createHea = function () {
+        var heaGeometry = new THREE.BoxGeometry(0.1,0.1,0.1);
+        var heaMaterial = new THREE.MeshPhongMaterial({ color: 0xFFF12 }); // Paech color
+
+        return function () {
+            var hea = new THREE.Mesh(heaGeometry, heaMaterial);
+            hea.isHea = true;
+
+            return hea;
         };
     }();
 
@@ -599,7 +614,7 @@
                 // L - speedmoved
                 //pacman.translateOnAxis(pacman.direction, -PACMAN_SPEED * delta);
                 pacman.translateOnAxis(LEFT, PACMAN_SPEED * delta*1);
-                pacman.distanceMoved += PACMAN_SPEED * delta*5;
+                pacman.distanceMoved += PACMAN_SPEED * delta*1;
             }
             // Move based on current keys being pressed.
             if (keys['W']) {
@@ -648,6 +663,19 @@
             if (cell && cell.isDot === true && cell.visible === true) {
                 removeAt(map, scene, pacman.position);
                 numDotsEaten += 1;
+            }
+
+            // make pacman eat hea
+            if (cell && cell.isHea === true && cell.visible === true) {
+                removeAt(map, scene, pacman.position);
+                lives += 1;
+                for (var i = lives; i <= lives; i++) {
+                    var life = document.createElement('img');
+                    life.src = 'pacman.png';
+                    life.className = 'life';
+        
+                    livesContainer.appendChild(life);
+                }
             }
 
             // Make pacman eat power pellets.
