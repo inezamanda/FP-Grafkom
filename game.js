@@ -135,19 +135,41 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
   };
 
   var createWall = (function () {
-    var wallGeometry = new THREE.BoxGeometry(1, 1, 1);
-    // var wallMaterial = new THREE.MeshLambertMaterial({ color : 0Xff5da2 });
+    var wallGeometry = new THREE.BoxGeometry(1, 1, 1.25);
 
     const loader4 = new THREE.TextureLoader();
-    const wallMap = loader4.load("./assets/wall1.jpg");
-    const wallBump = loader4.load("./assets/crate0/crate0_bump.png");
-    const wallText = loader4.load("./assets/wests_textures/woodfloor2.png");
 
-    var wallMaterial = new THREE.MeshPhongMaterial({
-      map: wallText,
-      //   bumpMap: wallBump,
-      //   normalMap: wallMap,
+    // Option 1
+    const wallMap = loader4.load(
+      "./assets/hexglow_texture/Hex_glow_basecolor.png"
+    );
+    const wallNormal = loader4.load(
+      "./assets/hexglow_texture/Hex_glow_normal.png"
+    );
+    const wallEmissive = loader4.load(
+      "./assets/hexglow_texture/Hex_glow_emissive.png"
+    );
+    const wallRoughness = loader4.load(
+      "./assets/hexglow_texture/Hex_glow_roughness.png"
+    );
+    const wallMetalness = loader4.load(
+      "./assets/hexglow_texture/Hex_glow_metallic.png"
+    );
+
+    var wallMaterial = new THREE.MeshStandardMaterial({
+      map: wallEmissive,
+      //   emissiveMap: wallEmissive,
+      metalnessMap: wallMetalness,
+      roughnessMap: wallRoughness,
+      normalMap: wallNormal,
     });
+
+    // Option 2
+    const wallMap2 = loader4.load("./assets/wall1.jpg");
+    // Uncomment for option 2
+    // var wallMaterial = new THREE.MeshStandardMaterial({
+    //   map: wallMap2,
+    // });
 
     return function () {
       var wall = new THREE.Mesh(wallGeometry, wallMaterial);
@@ -156,6 +178,34 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
       return wall;
     };
   })();
+
+  // create floor
+  var createPlane = function (scene, map) {
+    const loader4 = new THREE.TextureLoader();
+    const planeTex = loader4.load("./assets/blacktile.jpeg");
+    // const planeTex = loader4.load("./assets/paving3.png");
+
+    var width = map.right - map.left,
+      height = map.top - map.bottom;
+
+    planeTex.wrapS = THREE.RepeatWrapping;
+    planeTex.wrapT = THREE.RepeatWrapping;
+    planeTex.magFilter = THREE.NearestFilter;
+
+    planeTex.repeat.set(width + 1, height);
+
+    const planeGeo = new THREE.PlaneGeometry(width + 1, height);
+    const planeMat = new THREE.MeshPhongMaterial({
+      map: planeTex,
+      //   color: "white",
+      wireframe: false,
+    });
+
+    const mesh = new THREE.Mesh(planeGeo, planeMat);
+    mesh.receiveShadow = true;
+    mesh.position.copy(new THREE.Vector3(map.centerX, map.centerY, -0.5));
+    scene.add(mesh);
+  };
 
   // create pellet
   var createDot = (function () {
@@ -195,32 +245,6 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
       return pellet;
     };
   })();
-
-  // create floor
-  var createPlane = function (scene, map) {
-    const loader4 = new THREE.TextureLoader();
-    const planeTex = loader4.load("./assets/wests_textures/grass1.png");
-
-    var width = map.right - map.left,
-        height = map.top - map.bottom;
-
-    planeTex.wrapS = THREE.RepeatWrapping;
-    planeTex.wrapT = THREE.RepeatWrapping;
-    planeTex.magFilter = THREE.NearestFilter;
-
-    planeTex.repeat.set(width + 1, height);
-    
-    const planeGeo = new THREE.PlaneGeometry(width + 1, height);
-    const planeMat = new THREE.MeshPhongMaterial({
-      map: planeTex,
-      wireframe: false,
-    });
-    
-    const mesh = new THREE.Mesh(planeGeo, planeMat);
-    mesh.receiveShadow = true;
-    mesh.position.copy(new THREE.Vector3(map.centerX, map.centerY, -0.5));
-    scene.add(mesh);
-  };
 
   var createRenderer = function () {
     var renderer = new THREE.WebGLRenderer({ antialias: true });
