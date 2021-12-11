@@ -1,7 +1,7 @@
 // create floor
 function createPlane(scene, map) {
   const loader4 = new THREE.TextureLoader();
-  const planeTex = loader4.load("../assets/wall_floor/blacktile.jpeg");
+  const planeTex = loader4.load("../assets/image/wall_floor/blacktile.jpeg");
   // const planeTex = loader4.load("./assets/paving3.png");
 
   var width = map.right - map.left,
@@ -91,19 +91,19 @@ var createWall = (function () {
 
   // Option 1
   const wallMap = loader4.load(
-    "../assets/hexglow_texture/Hex_glow_basecolor.png"
+    "../assets/image/hexglow_texture/Hex_glow_basecolor.png"
   );
   const wallNormal = loader4.load(
-    "../assets/hexglow_texture/Hex_glow_normal.png"
+    "../assets/image/hexglow_texture/Hex_glow_normal.png"
   );
   const wallEmissive = loader4.load(
-    "../assets/hexglow_texture/Hex_glow_emissive.png"
+    "../assets/image/hexglow_texture/Hex_glow_emissive.png"
   );
   const wallRoughness = loader4.load(
-    "../assets/hexglow_texture/Hex_glow_roughness.png"
+    "../assets/image/hexglow_texture/Hex_glow_roughness.png"
   );
   const wallMetalness = loader4.load(
-    "../assets/hexglow_texture/Hex_glow_metallic.png"
+    "../assets/image/hexglow_texture/Hex_glow_metallic.png"
   );
 
   var wallMaterial = new THREE.MeshStandardMaterial({
@@ -115,7 +115,7 @@ var createWall = (function () {
   });
 
   // Option 2
-  const wallMap2 = loader4.load("../assets/wall_floor/wall1.jpg");
+  const wallMap2 = loader4.load("../assets/image/wall_floor/wall1.jpg");
   // Uncomment for option 2
   // var wallMaterial = new THREE.MeshStandardMaterial({
   //   map: wallMap2,

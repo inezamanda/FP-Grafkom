@@ -1,5 +1,4 @@
 function main() {
-
   // Game state variables
   var keys = createKeyState();
   var renderer = createRenderer();
@@ -57,7 +56,7 @@ function main() {
   var livesContainer = document.getElementById("lives");
   for (var i = 0; i < lives; i++) {
     var life = document.createElement("img");
-    life.src = "../assets/pacman.png";
+    life.src = "../assets/image/pacman.png";
     life.className = "life";
 
     livesContainer.appendChild(life);
@@ -279,7 +278,7 @@ function main() {
       lives += 1;
       for (var i = lives; i <= lives; i++) {
         var life = document.createElement("img");
-        life.src = "pacman.png";
+        life.src = "../assets/image/pacman.png";
         life.className = "life";
 
         livesContainer.appendChild(life);
