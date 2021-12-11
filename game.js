@@ -136,13 +136,12 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
 
   var createWall = (function () {
     var wallGeometry = new THREE.BoxGeometry(1, 1, 1);
-    // ganti warna tembok, pake texture
     // var wallMaterial = new THREE.MeshLambertMaterial({ color : 0Xff5da2 });
 
     const loader4 = new THREE.TextureLoader();
-    // const wallMap = loader4.load("./assets/wall1.png");
+    const wallMap = loader4.load("./assets/wall1.jpg");
     const wallBump = loader4.load("./assets/crate0/crate0_bump.png");
-    const wallText = loader4.load("./assets/wall1.jpg");
+    const wallText = loader4.load("./assets/wests_textures/woodfloor2.png");
 
     var wallMaterial = new THREE.MeshPhongMaterial({
       map: wallText,
@@ -158,10 +157,10 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
     };
   })();
 
+  // create pellet
   var createDot = (function () {
     var dotGeometry = new THREE.SphereGeometry(DOT_RADIUS);
-    // buat makanannya
-    var dotMaterial = new THREE.MeshPhongMaterial({ color: 0xffdab9 }); // Paech color
+    var dotMaterial = new THREE.MeshPhongMaterial({ color: 0xffdab9 }); // Peach color
 
     return function () {
       var dot = new THREE.Mesh(dotGeometry, dotMaterial);
@@ -171,6 +170,7 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
     };
   })();
 
+  // create health potion
   var createHea = (function () {
     var heaGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
     var heaMaterial = new THREE.MeshPhongMaterial({ color: 0xfff12 }); // Peach color
@@ -183,10 +183,9 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
     };
   })();
 
+  // create power pellet
   var createPowerPellet = (function () {
-    // kalau mau ganti objek jg sabi
     var pelletGeometry = new THREE.SphereGeometry(PELLET_RADIUS, 12, 8);
-    // buat makanan power
     var pelletMaterial = new THREE.MeshPhongMaterial({ color: 0xffdab9 }); // Paech color
 
     return function () {
@@ -196,6 +195,32 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
       return pellet;
     };
   })();
+
+  // create floor
+  var createPlane = function (scene, map) {
+    const loader4 = new THREE.TextureLoader();
+    const planeTex = loader4.load("./assets/wests_textures/grass1.png");
+
+    var width = map.right - map.left,
+        height = map.top - map.bottom;
+
+    planeTex.wrapS = THREE.RepeatWrapping;
+    planeTex.wrapT = THREE.RepeatWrapping;
+    planeTex.magFilter = THREE.NearestFilter;
+
+    planeTex.repeat.set(width + 1, height);
+    
+    const planeGeo = new THREE.PlaneGeometry(width + 1, height);
+    const planeMat = new THREE.MeshPhongMaterial({
+      map: planeTex,
+      wireframe: false,
+    });
+    
+    const mesh = new THREE.Mesh(planeGeo, planeMat);
+    mesh.receiveShadow = true;
+    mesh.position.copy(new THREE.Vector3(map.centerX, map.centerY, -0.5));
+    scene.add(mesh);
+  };
 
   var createRenderer = function () {
     var renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -412,6 +437,7 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
     var scene = createScene();
 
     var map = createMap(scene, LEVEL);
+    var plane = createPlane(scene, map);
     var numDotsEaten = 0;
 
     var camera = new THREE.PerspectiveCamera(
@@ -484,7 +510,7 @@ import { MTLLoader } from "https://threejsfundamentals.org/threejs/resources/thr
       // Cannot remove items from scene.children while iterating
       // through it, so remove them after the forEach loop.
       remove.forEach(scene.remove, scene);
-      for (item in remove) {
+      for (var item in remove) {
         if (remove.hasOwnProperty(item)) {
           scene.remove(remove[item]);
           delete remove[item];
