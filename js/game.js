@@ -97,30 +97,33 @@ function main() {
     var textMaterial = new THREE.MeshPhongMaterial({ color: "white" });
 
     const loader = new THREE.FontLoader();
-    loader.load("helvetiker_regular.typeface.js", function (font) {
-      // Show 3D text banner.
-      var textGeometry = new THREE.TextGeometry(message, {
-        size: size,
-        height: 0.05,
-        font: font,
-      });
+    loader.load(
+      "../assets/font/helvetiker_regular.typeface.js",
+      function (font) {
+        // Show 3D text banner.
+        var textGeometry = new THREE.TextGeometry(message, {
+          size: size,
+          height: 0.05,
+          font: font,
+        });
 
-      var text = new THREE.Mesh(textGeometry, textMaterial);
+        var text = new THREE.Mesh(textGeometry, textMaterial);
 
-      // Position text just above pacman.
-      text.position.copy(pacman.position).add(UP);
+        // Position text just above pacman.
+        text.position.copy(pacman.position).add(UP);
 
-      // Rotate text so that it faces same direction as pacman.
-      text.up.copy(pacman.direction);
-      text.lookAt(text.position.clone().add(UP));
+        // Rotate text so that it faces same direction as pacman.
+        text.up.copy(pacman.direction);
+        text.lookAt(text.position.clone().add(UP));
 
-      // Remove after 3 seconds.
-      text.isTemporary = true;
-      text.removeAfter = now + 3;
+        // Remove after 3 seconds.
+        text.isTemporary = true;
+        text.removeAfter = now + 3;
 
-      scene.add(text);
-      return text;
-    });
+        scene.add(text);
+        return text;
+      }
+    );
   };
 
   var updatePacman = function (delta, now) {
@@ -283,6 +286,7 @@ function main() {
 
         livesContainer.appendChild(life);
       }
+      killSound.play();
     }
 
     // Make pacman eat power pellets.
