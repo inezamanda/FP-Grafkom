@@ -50,6 +50,28 @@ function main() {
   killSound.preload = "auto";
 
   var remove = [];
+  var active = false;
+
+  const gameover = document.getElementById("gameover");
+  const instructions = document.getElementById("instructions");
+  const btn = document.getElementById("playBtn");
+  var startGame;
+  btn.addEventListener("click", startGame = () => {
+    gameover.style.display = "none";
+    instructions.style.display = "none";
+    btn.style.display = "none";
+
+    active = true;
+  });
+
+  function gameOver() {
+    active = false;
+
+    const gameover = document.getElementById("gameover");
+
+    gameover.style.display = "block";
+    btn.style.display = "block";
+  }
 
   // Create life images
   var lives = 3;
@@ -362,7 +384,11 @@ function main() {
         document.getElementsByClassName("life")[lives].style.display = "none";
 
         if (lives > 0) showText("You died =(", 0.1, now);
-        else showText("Game over =(", 0.1, now);
+        else {
+          showText("Game over =(", 0.1, now);
+          // show window gameover trus button restart
+          setTimeout(gameOver(), 1200);
+        }
 
         lost = true;
         deathPosition = pacman.position;
