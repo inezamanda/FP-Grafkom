@@ -1,3 +1,26 @@
+
+  // skybox setup
+  function setSkyBox(scene) {
+    const geometry = new THREE.BoxGeometry(1000, 1000, 1000);
+    geometry.scale(-1, 1, 1); // Set up scale.x
+    // geometry.scale(1, -1, 1) Set up scale.y, It will turn the picture upside down , So it is usually set scale.x perhaps scale.z
+    const urls = [
+      "bluecloud_ft.jpg", // x pos
+      "bluecloud_bk.jpg", // x neg
+      "bluecloud_up.jpg", // y pos
+      "bluecloud_dn.jpg", // y neg
+      "bluecloud_rt.jpg", // z pos
+      "bluecloud_lf.jpg", // zneg
+    ];
+
+    // Instantiation CubeTextureLoader
+    const loader = new THREE.CubeTextureLoader();
+    // load 6 Images
+    const cubeMap = loader.setPath("../assets/image/skybox/").load(urls);
+    // Take the image texture as the background of the scene
+    scene.background = cubeMap;
+  }
+  
 // create floor
 function createPlane(scene, map) {
   const loader4 = new THREE.TextureLoader();
@@ -142,19 +165,6 @@ var createDot = (function () {
   };
 })();
 
-// create health potion
-var createHea = (function () {
-  var heaGeometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-  var heaMaterial = new THREE.MeshPhongMaterial({ color: 0xfff12 }); // Peach color
-
-  return function () {
-    var hea = new THREE.Mesh(heaGeometry, heaMaterial);
-    hea.isHea = true;
-
-    return hea;
-  };
-})();
-
 // create power pellet
 var createPowerPellet = (function () {
   var pelletGeometry = new THREE.SphereGeometry(PELLET_RADIUS, 12, 8);
@@ -167,3 +177,64 @@ var createPowerPellet = (function () {
     return pellet;
   };
 })();
+  //area
+
+//create health potion
+var createHea = (function (isHea) {
+  var shape = new THREE.Shape();
+  var heaMaterial = new THREE.MeshPhongMaterial({ color: 0xDB181E }); // Peach color
+  const x = -2.5;
+  const y = -5;
+  shape.moveTo(x + 2.5, y + 2.5);
+  shape.bezierCurveTo(x + 2.5, y + 2.5, x + 2, y, x, y);
+  shape.bezierCurveTo(x - 3, y, x - 3, y + 3.5, x - 3, y + 3.5);
+  shape.bezierCurveTo(x - 3, y + 5.5, x - 1.5, y + 7.7, x + 2.5, y + 9.5);
+  shape.bezierCurveTo(x + 6, y + 7.7, x + 8, y + 4.5, x + 8, y + 3.5);
+  shape.bezierCurveTo(x + 8, y + 3.5, x + 8, y, x + 5, y);
+  shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
+
+  const extrudeSettings = {
+    steps: 1,  // ui: steps
+    depth: 1,  // ui: depth
+    bevelEnabled: true,  // ui: bevelEnabled
+    bevelThickness: 1,  // ui: bevelThickness
+    bevelSize: 0,  // ui: bevelSize
+    bevelSegments: 1,  // ui: bevelSegments
+  };
+  const heaGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  heaGeometry.scale(0.03,0.03,0.03);
+  
+  return function () {
+    var hea = new THREE.Mesh(heaGeometry, heaMaterial);
+    hea.isHea = true;
+    hea.rotation.x = -Math.PI/2;
+    return hea;
+  };
+})();
+
+// FAIL NGAB, gabisa hapus objeknya
+// const path="../assets/objek/small_bottle/scene.gltf"
+// var createHea = (function (x, y) {
+//   const loader = new GLTFLoader()
+//   const dracoLoader = new DRACOLoader()
+//   loader.setDRACOLoader(dracoLoader)
+
+//   return function(x, y){
+//     var hea = loader.load(path, (gltf) => {
+//       gltf.scene.traverse( function ( child ) {
+//         if ( child.isMesh ) {
+//             child.geometry.center(); // center here
+//         }
+//     });
+//       gltf.scene.castShadow = true;
+//       gltf.scene.receiveShadow = true;
+//       gltf.scene.position.set(x,y,0);
+//       gltf.scene.scale.setScalar(0.1);
+//       var heaObj = gltf.scene;
+//       scene.add(heaObj)
+//       // var box = new THREE.Box3().setFromObject(hea);
+//       // console.log("tes" + box.min, box.max, box.getSize());
+//     })
+//     return hea;
+//   }
+// })();

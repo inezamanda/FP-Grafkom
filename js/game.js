@@ -1,8 +1,35 @@
+// import {GLTFLoader} from './GLTFLoader.js';
+import { GLTFLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/loaders/GLTFLoader.js";
+import { DRACOLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/loaders/DRACOLoader.js";
+
 function main() {
   // Game state variables
-  var keys = createKeyState();
-  var renderer = createRenderer();
-  var scene = createScene();
+// skybox setup
+
+var keys = createKeyState();
+var renderer = createRenderer();
+var scene = createScene();
+// function setSkyBox(scene) {
+//   const geometry = new THREE.BoxGeometry(1000, 1000, 1000);
+//   geometry.scale(-1, 1, 1); // Set up scale.x
+//   // geometry.scale(1, -1, 1) Set up scale.y, It will turn the picture upside down , So it is usually set scale.x perhaps scale.z
+//   const urls = [
+//     "bluecloud_ft.jpg", // x pos
+//     "bluecloud_bk.jpg", // x neg
+//     "bluecloud_up.jpg", // y pos
+//     "bluecloud_dn.jpg", // y neg
+//     "bluecloud_rt.jpg", // z pos
+//     "bluecloud_lf.jpg", // zneg
+//   ];
+
+//   // Instantiation CubeTextureLoader
+//   const loader = new THREE.CubeTextureLoader();
+//   // load 6 Images
+//   const cubeMap = loader.setPath("../assets/image/skybox/").load(urls);
+//   // Take the image texture as the background of the scene
+//   scene.background = cubeMap;
+// }
+// var skybox = setSkybox(scene);
   var map = createMap(scene, LEVEL);
   var plane = createPlane(scene, map);
   var numDotsEaten = 0;
@@ -33,45 +60,57 @@ function main() {
 
   // SET AUDIO
   // eating sound
-  var chompSound = new Audio("./audio/pacman_chomp.mp3");
+  var chompSound = new Audio("./audio/mixkit-quick-jump-arcade-game-239.wav");
   chompSound.volume = 0.5;
   chompSound.loop = true;
   chompSound.preload = "auto";
   // start game sound
-  var levelStartSound = new Audio("./audio/pacman_beginning.mp3");
+  var levelStartSound = new Audio("./audio/mixkit-arcade-rising-231.wav");
   levelStartSound.preload = "auto";
   // Play the level start sound as soon as the game starts.
   levelStartSound.autoplay = true;
   // death sound
-  var deathSound = new Audio("./audio/pacman_death.mp3");
-  deathSound.preload = "auto";
+  var soundGameOver = new Audio("./audio/mixkit-horror-lose-2028.wav");
+  soundGameOver.preload = "auto";
   // eat ghost sound
-  var killSound = new Audio("./audio/pacman_eatghost.mp3");
+  var killSound = new Audio("./audio/mixkit-video-game-health-recharge-2837.wav");
   killSound.preload = "auto";
+
+  var deathSound = new Audio("./audio/mixkit-fairytale-game-over-1945.wav");
+  deathSound.preload = "auto";
+
+  var palletPowerSound = new Audio("./audio/mixkit-bonus-extra-in-a-video-game-2064.wav");
+  palletPowerSound.preload = "auto";
+
+  var winSound = new Audio("./audio/mixkit-video-game-win-2016.wav");
+  winSound.preload = "auto";
 
   var remove = [];
   var active = false;
 
-  const gameover = document.getElementById("gameover");
-  const instructions = document.getElementById("instructions");
-  const btn = document.getElementById("playBtn");
-  var startGame;
-  btn.addEventListener("click", startGame = () => {
-    gameover.style.display = "none";
-    instructions.style.display = "none";
-    btn.style.display = "none";
+  // const gameover = document.getElementById("gameover");
+  // const instructions = document.getElementById("instructions");
+  // const btn = document.getElementById("playBtn");
+  // var startGame;
+  // btn.addEventListener("click", startGame = () => {
+  //   gameover.style.display = "none";
+  //   instructions.style.display = "none";
+  //   btn.style.display = "none";
 
-    active = true;
-  });
+  //   active = true;
+  // });
 
-  function gameOver() {
-    active = false;
+  // function gameOver() {
+  //   active = false;
 
-    const gameover = document.getElementById("gameover");
+  //   const gameover = document.getElementById("gameover");
 
-    gameover.style.display = "block";
-    btn.style.display = "block";
-  }
+  //   gameover.style.display = "block";
+  //   btn.style.display = "block";
+
+  //   soundGameOver.play();
+
+  // }
 
   // Create life images
   var lives = 3;
@@ -168,7 +207,7 @@ function main() {
 
       var text = showText("You won =D", 1, now);
 
-      levelStartSound.play();
+      winSound.play();
     }
 
     // Go to next level 4 seconds after winning.
@@ -317,7 +356,7 @@ function main() {
       removeAt(map, scene, pacman.position);
       pacman.atePellet = true;
 
-      killSound.play();
+      palletPowerSound.play();
     }
   };
 
@@ -383,18 +422,20 @@ function main() {
         // Unshow life
         document.getElementsByClassName("life")[lives].style.display = "none";
 
-        if (lives > 0) showText("You died =(", 0.1, now);
+        if (lives > 0){
+          showText("You died =(", 0.1, now);
+          deathSound.play();
+        } 
         else {
           showText("Game over =(", 0.1, now);
           // show window gameover trus button restart
           setTimeout(gameOver(), 1200);
+          deathSound.pause();
         }
 
         lost = true;
         deathPosition = pacman.position;
         lostTime = now;
-
-        deathSound.play();
       }
     }
   };
