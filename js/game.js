@@ -1,38 +1,38 @@
-// import {GLTFLoader} from './GLTFLoader.js';
 import { GLTFLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/loaders/DRACOLoader.js";
 
 function main() {
-  // Game state variables
-// skybox setup
-
-var keys = createKeyState();
-var renderer = createRenderer();
-var scene = createScene();
-// function setSkyBox(scene) {
-//   const geometry = new THREE.BoxGeometry(1000, 1000, 1000);
-//   geometry.scale(-1, 1, 1); // Set up scale.x
-//   // geometry.scale(1, -1, 1) Set up scale.y, It will turn the picture upside down , So it is usually set scale.x perhaps scale.z
-//   const urls = [
-//     "bluecloud_ft.jpg", // x pos
-//     "bluecloud_bk.jpg", // x neg
-//     "bluecloud_up.jpg", // y pos
-//     "bluecloud_dn.jpg", // y neg
-//     "bluecloud_rt.jpg", // z pos
-//     "bluecloud_lf.jpg", // zneg
-//   ];
-
-//   // Instantiation CubeTextureLoader
-//   const loader = new THREE.CubeTextureLoader();
-//   // load 6 Images
-//   const cubeMap = loader.setPath("../assets/image/skybox/").load(urls);
-//   // Take the image texture as the background of the scene
-//   scene.background = cubeMap;
-// }
-// var skybox = setSkybox(scene);
+  // Game-state variables
+  var keys = createKeyState();
+  var renderer = createRenderer();
+  var scene = createScene();
   var map = createMap(scene, LEVEL);
-  var plane = createPlane(scene, map);
   var numDotsEaten = 0;
+
+  // skybox setup
+  const path = "../assets/object/anime_starry_night/scene.gltf";
+  {
+    const loader = new GLTFLoader();
+    const dracoLoader = new DRACOLoader();
+    loader.setDRACOLoader(dracoLoader);
+
+    var hea = loader.load(path, (gltf) => {
+      gltf.scene.traverse(function (child) {
+        if (child.isMesh) {
+          child.geometry.center(); // center here
+        }
+      });
+      gltf.scene.castShadow = true;
+      gltf.scene.receiveShadow = true;
+      gltf.scene.rotation.x = Math.PI / 2;
+      gltf.scene.rotation.y = Math.PI / 2;
+      gltf.scene.position.set(0, 0, -350);
+      var heaObj = gltf.scene;
+      scene.add(heaObj);
+    });
+  }
+
+  createPlane(scene, map);
 
   // set camera
   var camera = new THREE.PerspectiveCamera(
@@ -73,13 +73,17 @@ var scene = createScene();
   var soundGameOver = new Audio("./audio/mixkit-horror-lose-2028.wav");
   soundGameOver.preload = "auto";
   // eat ghost sound
-  var killSound = new Audio("./audio/mixkit-video-game-health-recharge-2837.wav");
+  var killSound = new Audio(
+    "./audio/mixkit-video-game-health-recharge-2837.wav"
+  );
   killSound.preload = "auto";
 
   var deathSound = new Audio("./audio/mixkit-fairytale-game-over-1945.wav");
   deathSound.preload = "auto";
 
-  var palletPowerSound = new Audio("./audio/mixkit-bonus-extra-in-a-video-game-2064.wav");
+  var palletPowerSound = new Audio(
+    "./audio/mixkit-bonus-extra-in-a-video-game-2064.wav"
+  );
   palletPowerSound.preload = "auto";
 
   var winSound = new Audio("./audio/mixkit-video-game-win-2016.wav");
@@ -375,7 +379,7 @@ var scene = createScene();
       // Place camera above and behind pacman, looking towards direction of pacman.
       camera.targetPosition
         .copy(pacman.position)
-        .addScaledVector(UP, 1.5)
+        .addScaledVector(UP, 0.6)
         .addScaledVector(pacman.direction, -1);
       camera.targetLookAt.copy(pacman.position).add(pacman.direction);
     }
@@ -422,14 +426,13 @@ var scene = createScene();
         // Unshow life
         document.getElementsByClassName("life")[lives].style.display = "none";
 
-        if (lives > 0){
+        if (lives > 0) {
           showText("You died =(", 0.1, now);
           deathSound.play();
-        } 
-        else {
+        } else {
           showText("Game over =(", 0.1, now);
           // show window gameover trus button restart
-          setTimeout(gameOver(), 1200);
+          // setTimeout(gameOver(), 1200);
           deathSound.pause();
         }
 

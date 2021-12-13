@@ -1,30 +1,7 @@
-
-  // skybox setup
-  function setSkyBox(scene) {
-    const geometry = new THREE.BoxGeometry(1000, 1000, 1000);
-    geometry.scale(-1, 1, 1); // Set up scale.x
-    // geometry.scale(1, -1, 1) Set up scale.y, It will turn the picture upside down , So it is usually set scale.x perhaps scale.z
-    const urls = [
-      "bluecloud_ft.jpg", // x pos
-      "bluecloud_bk.jpg", // x neg
-      "bluecloud_up.jpg", // y pos
-      "bluecloud_dn.jpg", // y neg
-      "bluecloud_rt.jpg", // z pos
-      "bluecloud_lf.jpg", // zneg
-    ];
-
-    // Instantiation CubeTextureLoader
-    const loader = new THREE.CubeTextureLoader();
-    // load 6 Images
-    const cubeMap = loader.setPath("../assets/image/skybox/").load(urls);
-    // Take the image texture as the background of the scene
-    scene.background = cubeMap;
-  }
-  
 // create floor
 function createPlane(scene, map) {
   const loader4 = new THREE.TextureLoader();
-  const planeTex = loader4.load("../assets/image/wall_floor/blacktile.jpeg");
+  const planeTex = loader4.load("../assets/image/wall_floor/wall2.png");
   // const planeTex = loader4.load("./assets/paving3.png");
 
   var width = map.right - map.left,
@@ -108,7 +85,7 @@ function createMap(scene, levelDefinition) {
 }
 
 var createWall = (function () {
-  var wallGeometry = new THREE.BoxGeometry(1, 1, 1.25);
+  var wallGeometry = new THREE.BoxGeometry(1, 1, 1);
 
   const loader4 = new THREE.TextureLoader();
 
@@ -138,7 +115,7 @@ var createWall = (function () {
   });
 
   // Option 2
-  const wallMap2 = loader4.load("../assets/image/wall_floor/wall1.jpg");
+  const wallMap2 = loader4.load("../assets/image/wall_floor/disco.jpeg");
   // Uncomment for option 2
   // var wallMaterial = new THREE.MeshStandardMaterial({
   //   map: wallMap2,
@@ -177,12 +154,11 @@ var createPowerPellet = (function () {
     return pellet;
   };
 })();
-  //area
 
 //create health potion
 var createHea = (function (isHea) {
   var shape = new THREE.Shape();
-  var heaMaterial = new THREE.MeshPhongMaterial({ color: 0xDB181E }); // Peach color
+  var heaMaterial = new THREE.MeshPhongMaterial({ color: 0xdb181e }); // Peach color
   const x = -2.5;
   const y = -5;
   shape.moveTo(x + 2.5, y + 2.5);
@@ -194,20 +170,20 @@ var createHea = (function (isHea) {
   shape.bezierCurveTo(x + 3.5, y, x + 2.5, y + 2.5, x + 2.5, y + 2.5);
 
   const extrudeSettings = {
-    steps: 1,  // ui: steps
-    depth: 1,  // ui: depth
-    bevelEnabled: true,  // ui: bevelEnabled
-    bevelThickness: 1,  // ui: bevelThickness
-    bevelSize: 0,  // ui: bevelSize
-    bevelSegments: 1,  // ui: bevelSegments
+    steps: 1, // ui: steps
+    depth: 1, // ui: depth
+    bevelEnabled: true, // ui: bevelEnabled
+    bevelThickness: 1, // ui: bevelThickness
+    bevelSize: 0, // ui: bevelSize
+    bevelSegments: 1, // ui: bevelSegments
   };
   const heaGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-  heaGeometry.scale(0.03,0.03,0.03);
-  
+  heaGeometry.scale(0.03, 0.03, 0.03);
+
   return function () {
     var hea = new THREE.Mesh(heaGeometry, heaMaterial);
     hea.isHea = true;
-    hea.rotation.x = -Math.PI/2;
+    hea.rotation.x = -Math.PI / 2;
     return hea;
   };
 })();
