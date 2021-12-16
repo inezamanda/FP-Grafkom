@@ -1,4 +1,5 @@
 // create floor
+const heaArr = [];
 function createPlane(scene, map) {
   const loader4 = new THREE.TextureLoader();
   const planeTex = loader4.load("../assets/image/wall_floor/wall2.png");
@@ -156,7 +157,7 @@ var createPowerPellet = (function () {
 })();
 
 //create health potion
-var createHea = (function (isHea) {
+var createHea = (function () {
   var shape = new THREE.Shape();
   var heaMaterial = new THREE.MeshPhongMaterial({ color: 0xdb181e }); // Peach color
   const x = -2.5;
@@ -184,6 +185,7 @@ var createHea = (function (isHea) {
     var hea = new THREE.Mesh(heaGeometry, heaMaterial);
     hea.isHea = true;
     hea.rotation.x = -Math.PI / 2;
+    heaArr.push(hea);
     return hea;
   };
 })();

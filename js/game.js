@@ -1,6 +1,18 @@
 import { GLTFLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "https://threejsfundamentals.org/threejs/resources/threejs/r132/examples/jsm/loaders/DRACOLoader.js";
 
+function createScene() {
+  var scene = new THREE.Scene();
+
+  // Add lighting
+  scene.add(new THREE.AmbientLight(0x888888)); // light 1
+  var light = new THREE.SpotLight("white", 0.5); // light 2
+  light.position.set(0, 0, 50); // light 2 position
+  scene.add(light);
+
+  return scene;
+}
+
 function main() {
   // Game-state variables
   var keys = createKeyState();
@@ -129,6 +141,9 @@ function main() {
 
   // Main game logic
   var update = function (delta, now) {
+    if (keys[27]) {
+      pauseState();
+    }
     updatePacman(delta, now);
 
     updateCamera(delta, now);
@@ -359,7 +374,8 @@ function main() {
     if (cell && cell.isPowerPellet === true && cell.visible === true) {
       removeAt(map, scene, pacman.position);
       pacman.atePellet = true;
-
+      // pacman.translateOnAxis(LEFT, PACMAN_SPEED * delta * 1);
+      // pacman.distanceMoved += PACMAN_SPEED * delta * 1;
       palletPowerSound.play();
     }
   };
@@ -424,7 +440,10 @@ function main() {
       } else {
         lives -= 1;
         // Unshow life
+        const liveGone = document.getElementsByClassName("life")[lives];
         document.getElementsByClassName("life")[lives].style.display = "none";
+        liveGone.parentNode.removeChild(liveGone);
+
 
         if (lives > 0) {
           showText("You died =(", 0.1, now);
@@ -433,11 +452,12 @@ function main() {
           showText("Game over =(", 0.1, now);
           // show window gameover trus button restart
           // setTimeout(gameOver(), 1200);
-          deathSound.pause();
+          deathSound.play();
         }
 
         lost = true;
         deathPosition = pacman.position;
+        // deathDirection = pacman.direction;
         lostTime = now;
       }
     }
@@ -498,6 +518,45 @@ function main() {
     };
   })();
 
+  function animationLoop(callback, requestFrameFunction) {
+    requestFrameFunction = requestFrameFunction || requestAnimationFrame;
+
+    var previousFrameTime = window.performance.now();
+
+    // How many seconds the animation has progressed in total.
+    var animationSeconds = 0;
+
+    function render() {
+      if (GAME_STATE == "START") {
+        heaArr.forEach((hea) => {
+          // console.log(hea);
+          const time = Date.now() * 0.0005;
+          hea.rotation.y += 0.01;
+          hea.position.z += Math.sin(time * 10) * 0.004;
+        });
+
+        var now = window.performance.now();
+        var animationDelta = (now - previousFrameTime) / 1000;
+        previousFrameTime = now;
+
+        // requestAnimationFrame will not call the callback if the browser
+        // isn't visible, so if the browser has lost focus for a while the
+        // time since the last frame might be very large. This could cause
+        // strange behavior (such as objects teleporting through walls in
+        // one frame when they would normally move slowly toward the wall
+        // over several frames), so make sure that the delta is never too
+        // large.
+        animationDelta = Math.min(animationDelta, 1 / 30);
+
+        // Keep track of how many seconds of animation has passed.
+        animationSeconds += animationDelta;
+
+        callback(animationDelta, animationSeconds);
+        requestFrameFunction(render);
+      }
+    }
+    render();
+  }
   // Main game loop
   animationLoop(function (delta, now) {
     update(delta, now);
@@ -513,6 +572,46 @@ function main() {
 
     // Render HUD
     renderHud(renderer, hudCamera, scene);
+  });
+
+  function pauseState() {
+    var dialog = document.getElementById("help-dialog");
+    dialog.style.display = "block";
+    GAME_STATE = "LOOSE";
+  }
+  function looseState() {
+    var dialog = document.getElementById("help-dialog");
+    dialog.style.display = "block";
+    GAME_STATE = "PAUSE";
+  }
+  function continueState() {
+    var dialog = document.getElementById("help-dialog");
+    dialog.style.display = "none";
+    GAME_STATE = "START";
+    animationLoop(function (delta, now) {
+      update(delta, now);
+
+      // Render main view
+      renderer.setViewport(
+        0,
+        0,
+        renderer.domElement.width,
+        renderer.domElement.height
+      );
+      renderer.render(scene, camera);
+
+      // Render HUD
+      renderHud(renderer, hudCamera, scene);
+    });
+  }
+
+  const helpBtn = document.querySelector("#help-button");
+  const closeHelpBtn = document.querySelector("#close-help-button");
+  helpBtn.addEventListener("click", function () {
+    pauseState();
+  });
+  closeHelpBtn.addEventListener("click", function () {
+    continueState();
   });
 }
 

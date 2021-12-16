@@ -1,5 +1,7 @@
 // Constants
 // =========
+let GAME_STATE = "START";
+
 var PACMAN_SPEED = 2,
   PACMAN_RADIUS = 0.25;
 var GHOST_SPEED = 1.5,

@@ -7,17 +7,17 @@ function createRenderer() {
   return renderer;
 }
 
-function createScene() {
-  var scene = new THREE.Scene();
+// function createScene() {
+//   var scene = new THREE.Scene();
 
-  // Add lighting
-  scene.add(new THREE.AmbientLight(0x888888)); // light 1
-  var light = new THREE.SpotLight("white", 0.5); // light 2
-  light.position.set(0, 0, 50); // light 2 position
-  scene.add(light);
+//   // Add lighting
+//   scene.add(new THREE.AmbientLight(0x888888)); // light 1
+//   var light = new THREE.SpotLight("white", 0.5); // light 2
+//   light.position.set(0, 0, 50); // light 2 position
+//   scene.add(light);
 
-  return scene;
-}
+//   return scene;
+// }
 
 // Mini map camera
 function createHudCamera(map) {
@@ -81,35 +81,43 @@ function createKeyState() {
   return keyState;
 }
 
-function animationLoop(callback, requestFrameFunction) {
-  requestFrameFunction = requestFrameFunction || requestAnimationFrame;
+// function animationLoop(callback, requestFrameFunction) {
+//   requestFrameFunction = requestFrameFunction || requestAnimationFrame;
 
-  var previousFrameTime = window.performance.now();
+//   var previousFrameTime = window.performance.now();
 
-  // How many seconds the animation has progressed in total.
-  var animationSeconds = 0;
+//   // How many seconds the animation has progressed in total.
+//   var animationSeconds = 0;
 
-  function render() {
-    var now = window.performance.now();
-    var animationDelta = (now - previousFrameTime) / 1000;
-    previousFrameTime = now;
+//   function render() {
+//     // heaArr.forEach((hea) => {
+//     //   // console.log(hea);
+//     //   const time = Date.now() * 0.0005;
+//     //   hea.rotation.y += 0.01;
+//     //   hea.position.z +=
+//     //     Math.sin(time * 4 + camera.position.x + camera.position.z) * 0.01;
+//     // });
 
-    // requestAnimationFrame will not call the callback if the browser
-    // isn't visible, so if the browser has lost focus for a while the
-    // time since the last frame might be very large. This could cause
-    // strange behavior (such as objects teleporting through walls in
-    // one frame when they would normally move slowly toward the wall
-    // over several frames), so make sure that the delta is never too
-    // large.
-    animationDelta = Math.min(animationDelta, 1 / 30);
+//     var now = window.performance.now();
+//     var animationDelta = (now - previousFrameTime) / 1000;
+//     previousFrameTime = now;
 
-    // Keep track of how many seconds of animation has passed.
-    animationSeconds += animationDelta;
+//     // requestAnimationFrame will not call the callback if the browser
+//     // isn't visible, so if the browser has lost focus for a while the
+//     // time since the last frame might be very large. This could cause
+//     // strange behavior (such as objects teleporting through walls in
+//     // one frame when they would normally move slowly toward the wall
+//     // over several frames), so make sure that the delta is never too
+//     // large.
+//     animationDelta = Math.min(animationDelta, 1 / 30);
 
-    callback(animationDelta, animationSeconds);
+//     // Keep track of how many seconds of animation has passed.
+//     animationSeconds += animationDelta;
 
-    requestFrameFunction(render);
-  }
+//     callback(animationDelta, animationSeconds);
 
-  requestFrameFunction(render);
-}
+//     requestFrameFunction(render);
+//   }
+
+//   requestFrameFunction(render);
+// }
