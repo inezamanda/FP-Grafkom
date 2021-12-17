@@ -106,7 +106,7 @@ function main() {
   var active = false;
 
   // Create life images
-  var lives = 1;
+  var lives = 3;
   var livesContainer = document.getElementById("lives");
   for (var i = 0; i < lives; i++) {
     var life = document.createElement("img");
@@ -535,7 +535,7 @@ function main() {
     }
     render();
   }
-  
+
   // Main game loop
   animationLoop(function (delta, now) {
     update(delta, now);
