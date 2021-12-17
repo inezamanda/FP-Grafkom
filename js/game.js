@@ -20,6 +20,7 @@ function main() {
   var scene = createScene();
   var map = createMap(scene, LEVEL);
   var numDotsEaten = 0;
+  var isGameover = false;
 
   // skybox setup
   const path = "../assets/object/anime_starry_night/scene.gltf";
@@ -104,32 +105,8 @@ function main() {
   var remove = [];
   var active = false;
 
-  // const gameover = document.getElementById("gameover");
-  // const instructions = document.getElementById("instructions");
-  // const btn = document.getElementById("playBtn");
-  // var startGame;
-  // btn.addEventListener("click", startGame = () => {
-  //   gameover.style.display = "none";
-  //   instructions.style.display = "none";
-  //   btn.style.display = "none";
-
-  //   active = true;
-  // });
-
-  // function gameOver() {
-  //   active = false;
-
-  //   const gameover = document.getElementById("gameover");
-
-  //   gameover.style.display = "block";
-  //   btn.style.display = "block";
-
-  //   soundGameOver.play();
-
-  // }
-
   // Create life images
-  var lives = 3;
+  var lives = 1;
   var livesContainer = document.getElementById("lives");
   for (var i = 0; i < lives; i++) {
     var life = document.createElement("img");
@@ -143,6 +120,11 @@ function main() {
   var update = function (delta, now) {
     if (keys[27]) {
       pauseState();
+    }
+
+    if (isGameover) {
+      isGameover = false;
+      gameoverState();
     }
     updatePacman(delta, now);
 
@@ -288,19 +270,18 @@ function main() {
     // set the up direction so that it points forward.
     pacman.up.copy(pacman.direction).applyAxisAngle(UP, -Math.PI / 2);
     pacman.lookAt(_lookAt.copy(pacman.position).add(UP));
-    if (keys["L"]) {
-      // L - speedmoved
-      //pacman.translateOnAxis(pacman.direction, -PACMAN_SPEED * delta);
-      pacman.translateOnAxis(LEFT, PACMAN_SPEED * delta * 1);
-      pacman.distanceMoved += PACMAN_SPEED * delta * 1;
-    }
-    // Move based on current keys being pressed.
     if (keys["W"]) {
       // W - move forward
       //pacman.translateOnAxis(pacman.direction, PACMAN_SPEED * delta);
       // Because we are rotating the object above using lookAt, "forward" is to the left.
       pacman.translateOnAxis(LEFT, PACMAN_SPEED * delta);
       pacman.distanceMoved += PACMAN_SPEED * delta;
+    }
+    if (keys["W"] && keys["L"]) {
+      // L - speedmoved
+      //pacman.translateOnAxis(pacman.direction, -PACMAN_SPEED * delta);
+      pacman.translateOnAxis(LEFT, PACMAN_SPEED * delta * 1);
+      pacman.distanceMoved += PACMAN_SPEED * delta * 1;
     }
     if (keys["A"]) {
       // A - rotate left
@@ -315,6 +296,12 @@ function main() {
       //pacman.translateOnAxis(pacman.direction, -PACMAN_SPEED * delta);
       pacman.translateOnAxis(LEFT, -PACMAN_SPEED * delta);
       pacman.distanceMoved += PACMAN_SPEED * delta;
+    }
+    if (keys["S"] && keys["L"]) {
+      // L - speedmoved
+      //pacman.translateOnAxis(pacman.direction, -PACMAN_SPEED * delta);
+      pacman.translateOnAxis(LEFT, -PACMAN_SPEED * delta * 1);
+      pacman.distanceMoved += PACMAN_SPEED * delta * 1;
     }
 
     // Check for collision with walls.
@@ -374,8 +361,6 @@ function main() {
     if (cell && cell.isPowerPellet === true && cell.visible === true) {
       removeAt(map, scene, pacman.position);
       pacman.atePellet = true;
-      // pacman.translateOnAxis(LEFT, PACMAN_SPEED * delta * 1);
-      // pacman.distanceMoved += PACMAN_SPEED * delta * 1;
       palletPowerSound.play();
     }
   };
@@ -444,7 +429,6 @@ function main() {
         document.getElementsByClassName("life")[lives].style.display = "none";
         liveGone.parentNode.removeChild(liveGone);
 
-
         if (lives > 0) {
           showText("You died =(", 0.1, now);
           deathSound.play();
@@ -453,6 +437,7 @@ function main() {
           // show window gameover trus button restart
           // setTimeout(gameOver(), 1200);
           deathSound.play();
+          isGameover = true;
         }
 
         lost = true;
@@ -539,13 +524,6 @@ function main() {
         var animationDelta = (now - previousFrameTime) / 1000;
         previousFrameTime = now;
 
-        // requestAnimationFrame will not call the callback if the browser
-        // isn't visible, so if the browser has lost focus for a while the
-        // time since the last frame might be very large. This could cause
-        // strange behavior (such as objects teleporting through walls in
-        // one frame when they would normally move slowly toward the wall
-        // over several frames), so make sure that the delta is never too
-        // large.
         animationDelta = Math.min(animationDelta, 1 / 30);
 
         // Keep track of how many seconds of animation has passed.
@@ -557,6 +535,7 @@ function main() {
     }
     render();
   }
+  
   // Main game loop
   animationLoop(function (delta, now) {
     update(delta, now);
@@ -574,16 +553,21 @@ function main() {
     renderHud(renderer, hudCamera, scene);
   });
 
+  function restart() {
+    location.reload();
+  }
+
   function pauseState() {
     var dialog = document.getElementById("help-dialog");
     dialog.style.display = "block";
     GAME_STATE = "LOOSE";
   }
-  function looseState() {
-    var dialog = document.getElementById("help-dialog");
+
+  function gameoverState() {
+    var dialog = document.getElementById("gameover-dialog");
     dialog.style.display = "block";
-    GAME_STATE = "PAUSE";
   }
+
   function continueState() {
     var dialog = document.getElementById("help-dialog");
     dialog.style.display = "none";
@@ -612,6 +596,11 @@ function main() {
   });
   closeHelpBtn.addEventListener("click", function () {
     continueState();
+  });
+
+  const gameoverBtn = document.querySelector("#gameover-button");
+  gameoverBtn.addEventListener("click", function () {
+    restart();
   });
 }
 
