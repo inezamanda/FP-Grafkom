@@ -16,7 +16,8 @@ function createScene() {
 function main() {
   // Game-state variables
   var keys = createKeyState();
-  var renderer = createRenderer();
+  const canvas = document.querySelector("#myCanvas");
+  var renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   var scene = createScene();
   var map = createMap(scene, LEVEL);
   var numDotsEaten = 0;
@@ -503,6 +504,18 @@ function main() {
     };
   })();
 
+  // resize render automatically
+  function resizeRendererToDisplaySize(renderer) {
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
+    if (needResize) {
+      renderer.setSize(width, height, false);
+    }
+    return needResize;
+  }
+
   function animationLoop(callback, requestFrameFunction) {
     requestFrameFunction = requestFrameFunction || requestAnimationFrame;
 
@@ -512,6 +525,12 @@ function main() {
     var animationSeconds = 0;
 
     function render() {
+      // responsive scaling
+      if (resizeRendererToDisplaySize(renderer)) {
+        const canvas = renderer.domElement;
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+      }
       if (GAME_STATE == "START") {
         heaArr.forEach((hea) => {
           // console.log(hea);

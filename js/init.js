@@ -1,24 +1,3 @@
-function createRenderer() {
-  var renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setClearColor(0xffe3fe, 1.0); // set area colour to peach pink
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-
-  return renderer;
-}
-
-// function createScene() {
-//   var scene = new THREE.Scene();
-
-//   // Add lighting
-//   scene.add(new THREE.AmbientLight(0x888888)); // light 1
-//   var light = new THREE.SpotLight("white", 0.5); // light 2
-//   light.position.set(0, 0, 50); // light 2 position
-//   scene.add(light);
-
-//   return scene;
-// }
-
 // Mini map camera
 function createHudCamera(map) {
   var width = map.right - map.left,
@@ -80,44 +59,3 @@ function createKeyState() {
 
   return keyState;
 }
-
-// function animationLoop(callback, requestFrameFunction) {
-//   requestFrameFunction = requestFrameFunction || requestAnimationFrame;
-
-//   var previousFrameTime = window.performance.now();
-
-//   // How many seconds the animation has progressed in total.
-//   var animationSeconds = 0;
-
-//   function render() {
-//     // heaArr.forEach((hea) => {
-//     //   // console.log(hea);
-//     //   const time = Date.now() * 0.0005;
-//     //   hea.rotation.y += 0.01;
-//     //   hea.position.z +=
-//     //     Math.sin(time * 4 + camera.position.x + camera.position.z) * 0.01;
-//     // });
-
-//     var now = window.performance.now();
-//     var animationDelta = (now - previousFrameTime) / 1000;
-//     previousFrameTime = now;
-
-//     // requestAnimationFrame will not call the callback if the browser
-//     // isn't visible, so if the browser has lost focus for a while the
-//     // time since the last frame might be very large. This could cause
-//     // strange behavior (such as objects teleporting through walls in
-//     // one frame when they would normally move slowly toward the wall
-//     // over several frames), so make sure that the delta is never too
-//     // large.
-//     animationDelta = Math.min(animationDelta, 1 / 30);
-
-//     // Keep track of how many seconds of animation has passed.
-//     animationSeconds += animationDelta;
-
-//     callback(animationDelta, animationSeconds);
-
-//     requestFrameFunction(render);
-//   }
-
-//   requestFrameFunction(render);
-// }
