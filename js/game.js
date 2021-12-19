@@ -73,6 +73,11 @@ function main() {
   var deathPosition = new THREE.Vector3();
 
   // SET AUDIO
+  // background song
+  var bgSound = new Audio("./audio/bg.mp3");
+  bgSound.volume = 0.35;
+  bgSound.loop = true;
+  bgSound.preload = "auto";
   // eating sound
   var chompSound = new Audio("./audio/mixkit-quick-jump-arcade-game-239.wav");
   chompSound.volume = 0.5;
@@ -526,6 +531,7 @@ function main() {
 
     function render() {
       // responsive scaling
+      bgSound.play();
       if (resizeRendererToDisplaySize(renderer)) {
         const canvas = renderer.domElement;
         camera.aspect = canvas.clientWidth / canvas.clientHeight;
